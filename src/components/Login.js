@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-function Login({ setIsLoggedIn }) {
+function Login({ onLogin }) {
   const history = useHistory();
   const [formData, setFormData] = useState({
     username: "",
@@ -17,8 +17,18 @@ function Login({ setIsLoggedIn }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-
-    setIsLoggedIn(true);
+    fetch('http://localhost:3000/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((resp) => resp.json())
+      .then((user) => {
+        onLogin(user);
+        history.push("/");
+      })
 
     // after logging the user in, redirect to the home page!
     history.push("/");
